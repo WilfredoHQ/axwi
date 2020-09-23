@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+// Importa archivos scss
+@import "axwi/settings/all";
+@import "axwi/tools/all";
+@import "axwi/base/all";
+@import "axwi/utilities/all";
+
+// CSS Variables
+:root {
+  // layout
+  --verticalBlockSpace: #{$l-unit * 2}; // 1rem
+  --verticalContentSpace: #{$l-unit * 2}; // 1rem
+  --gap: #{$l-unit * 2}; // 1rem
+  --maxWidth: #{$max-width};
+
+  @include from(lg) {
+    --verticalBlockSpace: #{$l-unit * 4};
+    --gap: #{$l-unit * 4}; // 2rem
+  }
+}

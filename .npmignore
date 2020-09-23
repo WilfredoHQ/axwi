@@ -1,0 +1,11 @@
+public/
+src/js/
+src/pug/
+src/scss/styles/
+src/scss/styles.scss
+
+gulpfile.babel.js
+
+.babelrc
+.editorconfig
+

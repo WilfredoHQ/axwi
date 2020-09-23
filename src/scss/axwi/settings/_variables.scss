@@ -1,0 +1,21 @@
+// Configuraciones
+$dev: false !default;
+$dev-hover: false !default;
+$max-width: 1200px !default;
+$l-unit: 0.5rem !default;
+$gap: $l-unit * 4 !default; // 2rem
+$fractions: 3 6 !default;
+$container: axContainer !default;
+$item: axItem !default;
+$grid-container: axGrid !default;
+$max-grid-columns: 12 !default;
+
+// Breakpoints
+$breakpoints: (
+  s: 0,
+  m: 640px,
+  lg: 1024px,
+  xl: 1440px,
+) !default;
+
+$sizes: map-keys($breakpoints);

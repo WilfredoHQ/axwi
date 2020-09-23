@@ -1,0 +1,37 @@
+@include bp-prefix {
+  @each $position in static absolute relative fixed sticky {
+    &#{$position} {
+      position: #{$position};
+    }
+  }
+
+  @for $i from 1 through 10 {
+    &textRows#{$i} {
+      --textLines: #{$i};
+    }
+  }
+
+  &nowrap {
+    flex-wrap: nowrap;
+  }
+}
+
+[class*="textRows"] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--textLines);
+  overflow: hidden;
+}
+
+@each $size, $screenSize in $breakpoints {
+  .from-#{$size} {
+    @include to($size) {
+      display: none;
+    }
+  }
+  .to-#{$size} {
+    @include from($size) {
+      display: none;
+    }
+  }
+}

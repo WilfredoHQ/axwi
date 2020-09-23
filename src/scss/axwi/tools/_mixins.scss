@@ -1,0 +1,77 @@
+/// Pasa por cada uno de los puntos de interrupción de las variables predeterminadas y crea los selectores con la estructura breakpoint-name
+/// @param {string|list} $names - lista de nombres que usaremos para nombrar nuestras clases, recorremos una lista por si queremos múltiples selectores con el mismo valor
+/// @param {string}  $property - propiedad CSS
+/// @param {string} $value - valor CSS
+/// @param {string}  $concact - en ocasiones necesitaremos concadenar para crear clases más específicas, por la forma en que funciona el mixin no podemos usar concadenar desde los names
+@mixin bp-prefix($names: null, $property: null, $value: null, $concat: "") {
+  @each $name in $names {
+    @each $size in $sizes {
+      $selector: "#{$concat}.#{$size}-#{$name}";
+
+      @include from($size) {
+        #{$selector} {
+          @if $property and $value {
+            #{$property}: $value;
+          } @else {
+            @content;
+          }
+        }
+      }
+    }
+  }
+}
+
+/// La regla css se ejecuta por encima del breakpoint
+/// @param {breakpoint} $bp
+@mixin from($bp) {
+  @if is-core-bp($bp) {
+    @if $bp == s {
+      @content;
+    } @else {
+      @media screen and (min-width: get-bp($bp)) {
+        @content;
+      }
+    }
+  } @else if is-valid-bp($bp) {
+    @media screen and (min-width: $bp) {
+      @content;
+    }
+  }
+}
+
+/// La regla css se ejecuta por debajo del breakpoint
+/// @param {breakpoint} $bp
+@mixin to($bp) {
+  @if is-core-bp($bp) {
+    @if $bp == s {
+      @content;
+    } @else {
+      @media screen and (max-width: get-bp($bp) - 1px) {
+        @content;
+      }
+    }
+  } @else if is-valid-bp($bp) {
+    @media screen and (max-width: to-px($bp) - 1px) {
+      @content;
+    }
+  }
+}
+
+/// La regla css se ejecuta entre ambos breakpoints
+/// @param {breakpoint} $bp-from - breakpoint desde que medida se iniciara la regla
+/// @param {breakpoint} $bp-to - breakpoint hasta que medida se ejecutara la regla
+@mixin from-to($bp-from, $bp-to) {
+  @if is-core-bp($bp-from) and is-core-bp($bp-to) {
+    @if get-bp($bp-to) > get-bp($bp-from) {
+      @media screen and (min-width: get-bp($bp-from)) and (max-width: get-bp($bp-to) - 1px) {
+        @content;
+      }
+    }
+  } @else if is-valid-bp($bp-from) and is-valid-bp($bp-to) {
+    @if to-px($bp-to) > to-px($bp-from) {
+      @media screen and (min-width: $bp-from) and (max-width: to-px($bp-to) - 1px) {
+        @content;
+      }
+    }
+  }
+}

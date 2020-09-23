@@ -1,0 +1,162 @@
+// Altura de los pseudoelementos que imprimiran clases
+$info-height: rem(20px);
+$info-font-size: $info-height * 0.6;
+
+%info {
+  content: attr(class);
+  font-style: italic;
+  font-size: $info-font-size;
+  font-weight: normal;
+
+  z-index: 1;
+  right: 0;
+  position: absolute;
+
+  width: 100%;
+  padding: 0 em(5px);
+  height: $info-height;
+  line-height: $info-height;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Estilos para los containers en modo dev
+@mixin dev-container-style {
+  $dev-color: tomato;
+  padding-top: $info-height;
+  margin-bottom: 10px;
+  outline: 1px solid $dev-color;
+  position: relative;
+
+  .#{$container},
+  .#{$grid-container} {
+    margin-bottom: 0;
+  }
+
+  &::before {
+    @extend %info;
+    top: 0;
+    background: rgba($dev-color, 0.3);
+    color: $dev-color;
+  }
+}
+
+@mixin dev-container {
+  @if $dev == true {
+    @include dev-container-style;
+  } @else if $dev-hover == true {
+    &:hover {
+      @include dev-container-style;
+    }
+  }
+}
+
+// Estilos para los items en modo dev
+@mixin dev-item-style {
+  $dev-color: steelblue;
+  position: relative;
+  padding-bottom: $info-height;
+  background-color: rgba($dev-color, 0.1);
+  outline: 1px solid $dev-color;
+  background-clip: content-box;
+
+  &::before {
+    @extend %info;
+    background: rgba($dev-color, 0.8);
+    color: #fff;
+    bottom: 0;
+  }
+
+  &.#{$container},
+  &.#{$grid-container} {
+    $dev-color: tomato;
+    padding-bottom: 0;
+    outline: 1px solid $dev-color;
+
+    &::before {
+      background-color: rgba($dev-color, 0.3);
+      color: $dev-color;
+      bottom: auto;
+    }
+  }
+}
+
+@mixin dev-item {
+  @if $dev == true {
+    @include dev-item-style;
+  } @else if $dev-hover == true {
+    &:hover {
+      @include dev-item-style;
+    }
+  }
+}
+
+// Mixin para modo desarrollo
+@mixin dev-mode {
+  margin: 0 !important;
+  position: relative;
+  top: 66px;
+
+  // imprimir información del breakpoint
+  &::before {
+    @extend %info;
+    position: fixed;
+    z-index: 1000;
+    background: steelblue;
+    color: #fff;
+    font-size: $info-height * 0.7;
+    text-align: center;
+    line-height: 36px;
+    height: 36px;
+    top: 0;
+  }
+
+  @each $size, $screen-size in $breakpoints {
+    @include from($size) {
+      &::before {
+        content: "Axwi: size #{$size}, from #{$screen-size} (#{$container}s: red, #{$item}s: blue)";
+      }
+    }
+  }
+}
+
+// Incluir el modo dev en body
+@if $dev {
+  body {
+    @include dev-mode;
+  }
+}
+
+// CSS
+body.dev {
+  @include dev-mode;
+
+  .#{$container},
+  .#{$grid-container} {
+    @include dev-container-style;
+  }
+
+  .#{$item},
+  .#{$grid-container} > * {
+    @include dev-item-style;
+  }
+
+  &Hover {
+    .#{$container},
+    .#{$grid-container} {
+      &:hover {
+        @include dev-container-style;
+      }
+    }
+
+    .#{$item},
+    .#{$grid-container} > * {
+      &:hover {
+        @include dev-item-style;
+      }
+    }
+  }
+}

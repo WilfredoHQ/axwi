@@ -1,0 +1,109 @@
+// Gap para los grid containers con breakpoints
+@for $i from 0 through 4 {
+  @include bp-prefix(gap#{$i}, --gap, $l-unit * $i, ".#{$grid-container}");
+}
+
+.#{$grid-container} {
+  display: grid;
+  grid-template-columns: 100%;
+  column-gap: var(--gap);
+
+  // Evita que en tamaños moviles los items queden pegados a los lados
+  width: calc(100% - 2rem);
+  margin-left: 1rem;
+  margin-right: 1rem;
+  max-width: var(--maxWidth);
+
+  // Por sobre el max width el container se centra
+  @include from($max-width) {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // Agrega separación vertical entre filas
+  &.rowsGap {
+    row-gap: var(--gap);
+  }
+
+  // Para containers hijos de otro container o con clase full se elimninan los márgenes y se ocupa todo el ancho disponible
+  .#{$grid-container},
+  &.is-full {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  // Fuerza a axGrid a tomar tamaños y alineaciones con clases
+  // Es por conflicto con la declaracion anterior
+  @each $size in $sizes {
+    @include from($size) {
+      @for $i from 1 through 20 {
+        .#{$grid-container}.#{$size}-#{$i*5} {
+          width: $i * 5%;
+        }
+      }
+
+      .#{$grid-container}.#{$size}-toCenter {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .#{$grid-container}.#{$size}-toRight {
+        margin-left: auto;
+        margin-right: 0;
+      }
+
+      .#{$grid-container}.#{$size}-toLeft {
+        margin-left: 0;
+        margin-right: auto;
+      }
+    }
+  }
+
+  // Define columnas en containers e items por breakpoint
+  @each $size, $screen-size in $breakpoints {
+    // Estilos por breakpoint
+    @include from($size) {
+      // Recorre la cantidad de columnas
+      @for $i from 1 through $max-grid-columns {
+        // Columnas en el contenedor
+        &.#{$size}-grid#{$i} {
+          grid-template-columns: repeat($i, 1fr);
+        }
+
+        // Columnas en los items
+        > .#{$size}-cols#{$i} {
+          grid-column-end: span $i;
+        }
+
+        // Rows en los items
+        > .#{$size}-rows#{$i} {
+          grid-row-end: span $i;
+        }
+
+        // Inicio de columna en items
+        > .#{$size}-x#{$i} {
+          grid-column-start: $i;
+        }
+
+        // Inicio de fila en items
+        > .#{$size}-y#{$i} {
+          grid-row-start: $i;
+        }
+      }
+
+      // Dos columnas uno el auto
+      &.#{$size}-gridMax1fr {
+        grid-template-columns: max-content 1fr;
+      }
+    }
+  }
+
+  @include dev-container;
+
+  > * {
+    @include dev-item;
+  }
+}

@@ -1,0 +1,72 @@
+/// Transforma un valor en pixeles a em
+/// @param {number} $px - el valor en pixeles que se desea convertir
+/// @param {number} $context - el valor en pixeles del contenedor
+@function em($px, $context: 16px) {
+  @if type_of($px) == number and unit($px) == "px" {
+    @return ($px / $context) * 1em;
+  }
+}
+
+/// Transforma un valor en pixeles a rem
+/// @param {number} $px - el valor en pixeles que se desea convertir
+@function rem($px) {
+  @if type_of($px) == number and unit($px) == "px" {
+    @return ($px / 16px) * 1rem;
+  }
+}
+
+/// Convierte un valor en em o rem a px
+/// @param {number} $value - el valor en rem o em que se desea convertir
+@function to-px($value) {
+  @if type-of($value) == number {
+    @if unit($value) == "em" {
+      @return ($value / 1em) * 16px;
+    } @else if unit($value) == "rem" {
+      @return ($value / 1rem) * 16px;
+    } @else if unit($value) == "px" {
+      @return $value;
+    }
+  }
+}
+
+/// Devuelve true si el breakpoint es parte del core
+/// @param {breakpoint} $bp
+@function is-core-bp($bp) {
+  @if map-get($breakpoints, $bp) {
+    @return true;
+  } @else {
+    @return false;
+  }
+}
+
+/// Devuelve true si el breakpoint es válido (em, rem, px)
+/// @param {number} $bp
+@function is-valid-bp($bp) {
+  @if type-of($bp) ==
+    number and
+    (unit($bp) == "px" or unit($bp) == "em" or unit($bp) == "rem")
+  {
+    @return true;
+  } @else {
+    @return false;
+  }
+}
+
+/// Obtiene un breakpoint del core
+/// @param {breakpoint} $bp
+@function get-bp($bp) {
+  @return map-get($breakpoints, $bp);
+}
+
+/// Capitaliza un string
+/// @param {string} $string
+@function str-capitalize($string) {
+  @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
+}
+
+/// Extrae las primeras letras de un string escrito en kebab-case ejemplo: hola-mundo => hm
+/// @param {string} $string
+@function str-initials($string) {
+  @return str-slice($string, 1, 1) +
+    str-slice($string, str-index($string, "-") + 1, str-index($string, "-") + 1);
+}

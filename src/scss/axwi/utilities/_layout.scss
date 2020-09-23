@@ -1,0 +1,148 @@
+// Use las siguientes clases para crear separaciones verticales armoniosas
+// Encabezados
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: var(--verticalContentSpace);
+}
+
+h1 {
+  margin-bottom: calc(var(--verticalContentSpace) * 1.5);
+}
+
+// Separación entre secciones de contenido
+// La presencia de un titulo indica el cambio de sección
+p,
+video,
+blockquote,
+article,
+section,
+form,
+figure,
+iframe,
+ul,
+ol,
+pre,
+hr,
+dl,
+address,
+table {
+  margin-top: 0;
+  margin-bottom: calc(var(--verticalContentSpace) * 1.5);
+
+  + h2 {
+    padding-top: calc(var(--verticalContentSpace) * 1.5);
+  }
+
+  + h3 {
+    padding-top: var(--verticalContentSpace);
+  }
+}
+
+// Eliminar separaciones
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+  margin-bottom: 0;
+}
+
+// Las clases cancel cancelan el margin bottom del hermano anterior
+.block,
+.cancelBlock,
+.section,
+.cancelSection,
+.bigSection,
+.cancelBigSection {
+  margin-top: 0;
+}
+
+// Bloque
+.block {
+  margin-bottom: var(--verticalBlockSpace);
+}
+.cancelBlock {
+  margin-top: calc(var(--verticalBlockSpace) * -1);
+}
+
+// Sección
+.section {
+  margin-bottom: calc(var(--verticalBlockSpace) * 2);
+}
+.cancelSection {
+  margin-top: calc(var(--verticalBlockSpace) * -2);
+}
+
+// Big section
+.bigSection {
+  margin-bottom: calc(var(--verticalBlockSpace) * 4);
+}
+.cancelBigSection {
+  margin-top: calc(var(--verticalBlockSpace) * -4);
+}
+
+// Crean márgenes y paddings
+@include bp-prefix {
+  @for $i from 0 through 11 {
+    $unit: $l-unit * $i;
+
+    @if $i == 0 {
+      $unit: 0;
+    }
+
+    @if $i == 11 {
+      $i: "05";
+      $unit: $l-unit * 0.5;
+    }
+
+    &pt#{$i} {
+      padding-top: $unit;
+    }
+
+    &pl#{$i} {
+      padding-left: $unit;
+    }
+
+    &pb#{$i} {
+      padding-bottom: $unit;
+    }
+
+    &pr#{$i} {
+      padding-right: $unit;
+    }
+
+    &py#{$i} {
+      padding-top: $unit;
+      padding-bottom: $unit;
+    }
+
+    &px#{$i} {
+      padding-left: $unit;
+      padding-right: $unit;
+    }
+
+    &pxy#{$i} {
+      padding: $unit;
+    }
+
+    &mr#{$i} {
+      margin-right: $unit;
+    }
+
+    &mb#{$i} {
+      margin-bottom: $unit;
+    }
+
+    &mt#{$i} {
+      margin-top: $unit * -1;
+    }
+
+    &ml#{$i} {
+      margin-left: $unit * -1;
+    }
+  }
+}

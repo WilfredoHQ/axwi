@@ -1,0 +1,147 @@
+// Mapa de alineaciones flex
+$flex-alignments: (
+  row: (
+    flex-direction: row,
+  ),
+  rowReverse: (
+    flex-direction: row-reverse,
+  ),
+  column: (
+    flex-direction: column,
+  ),
+  columnReverse: (
+    flex-direction: column-reverse,
+  ),
+  mainStart: (
+    justify-content: flex-start,
+  ),
+  mainCenter: (
+    justify-content: center,
+  ),
+  mainEnd: (
+    justify-content: flex-end,
+  ),
+  mainBetween: (
+    justify-content: space-between,
+  ),
+  mainAround: (
+    justify-content: space-around,
+  ),
+  mainEvenly: (
+    justify-content: space-evenly,
+  ),
+  crossStart: (
+    align-items: flex-start,
+    align-content: flex-start,
+  ),
+  crossCenter: (
+    align-items: center,
+    align-content: center,
+  ),
+  crossEnd: (
+    align-items: flex-end,
+    align-content: flex-end,
+  ),
+  crossBaseline: (
+    align-items: baseline,
+    align-content: baseline,
+  ),
+  crossStretch: (
+    align-items: stretch,
+    align-content: stretch,
+  ),
+);
+
+// Crea selectores agrupados para propiedades básicas de flexbox
+@each $size in $sizes {
+  $selectors: ".flex";
+  @each $selector, $property in $flex-alignments {
+    $selector: ".#{$size}-#{$selector}";
+    $selectors: append($selectors, unquote($selector), comma);
+  }
+  @include from($size) {
+    #{$selectors} {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+// Recorre los breakpoints
+@include bp-prefix {
+  // Selectores de flex alignments en todos los breakpoints
+  @each $selector, $property in $flex-alignments {
+    &#{$selector} {
+      @each $prop, $value in $property {
+        #{$prop}: $value;
+      }
+    }
+  }
+
+  // Selectores de grid alignments en todos los breakpoints
+  @each $property in justify align {
+    @each $value in around between evenly {
+      &#{$property}Content#{str-capitalize($value)} {
+        #{$property}-content: space-#{$value};
+      }
+    }
+    @each $value in start end center stretch {
+      &#{$property}Content#{str-capitalize($value)} {
+        #{$property}-content: #{$value};
+      }
+      &#{$property}Items#{str-capitalize($value)} {
+        #{$property}-items: #{$value};
+      }
+      &#{$property}Self#{str-capitalize($value)} {
+        #{$property}-self: #{$value};
+      }
+    }
+  }
+
+  // Order
+  @for $i from 1 through $max-grid-columns {
+    &order#{$i} {
+      order: $i;
+    }
+  }
+
+  // Alineaciones
+  @each $align in left center right {
+    &#{$align} {
+      text-align: $align;
+    }
+  }
+
+  &toLeft {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  &toCenter {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &toRight {
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  &blockLeft {
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  &blockCenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &blockRight {
+    display: block;
+    margin-right: 0;
+    margin-left: auto;
+  }
+}

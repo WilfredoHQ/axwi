@@ -1,0 +1,99 @@
+// Placeholder para axContainer
+%ax-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: var(--maxWidth);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+// Placeholder para axItem
+%ax-item {
+  margin: 0;
+  padding-left: $gap / 2;
+  padding-right: $gap / 2;
+}
+
+// Mixin para crear un axContainer
+@mixin ax-container {
+  @extend %ax-container;
+
+  @include dev-container;
+
+  &.is-full {
+    max-width: 100%;
+  }
+}
+
+@mixin ax-item-width($current-bp, $prev-bp, $core-bp) {
+  // Si el tamaño actual es diferente al previo asignará el ancho en porcentaje
+  @if $current-bp != $prev-bp {
+    @if $current-bp < 1 {
+      @include from($core-bp) {
+        width: $current-bp * 100%;
+      }
+    } @else {
+      @include from($core-bp) {
+        width: $current-bp * 1%;
+      }
+    }
+  }
+}
+
+// Mixin para crear un axItem
+@mixin ax-item($s: 100, $m: $s, $lg: $m, $xl: $lg) {
+  @extend %ax-item;
+
+  @include dev-item;
+
+  // Calcular el ancho para el primer breakpoint por defecto es 100% y se convertirá al porcentaje adecuado según el valor que se le pase
+  @if $s == 100 {
+    width: 100%;
+  } @else if $s < 1 {
+    width: $s * 100%;
+  } @else {
+    width: $s * 1%;
+  }
+
+  // Anchos para los demás breakpoints
+  @include ax-item-width($m, $s, m); //medium
+  @include ax-item-width($lg, $m, l); //large
+  @include ax-item-width($xl, $lg, xl); //xlarge
+}
+
+// Crear un axContainer
+.#{$container} {
+  @include ax-container;
+}
+
+// Crear un axItem
+.#{$item} {
+  @include ax-item;
+
+  // Un axItem a la vez puede ser axContainer para evitar anidaciones innecesarias
+  &.#{$container} {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// Breakpoints
+@each $size in $sizes {
+  @include from($size) {
+    @for $i from 1 through 20 {
+      .#{$size}-#{$i*5},
+      .#{$item}.#{$size}-#{$i*5} {
+        width: $i * 5%;
+      }
+    }
+    @each $fraction in $fractions {
+      @for $i from 1 through $fraction {
+        .#{$size}-#{$i}-#{$fraction},
+        .#{$item}.#{$size}-#{$i}-#{$fraction} {
+          width: (100% / $fraction) * $i;
+        }
+      }
+    }
+  }
+}
